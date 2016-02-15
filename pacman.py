@@ -23,6 +23,8 @@ def draw_background(scr, img=None):
 class Map:
     def __init__(self, w, h):
         self.map = [ [list()]*x for i in range(y) ]
+        map_input = open('./resources/map.txt', 'r')
+        #FIXME
 
     def get(self, x, y):
         return self.map[x][y]
@@ -34,7 +36,8 @@ class Map:
                 self.map[new_x][new_y].add(obj)
                 obj.set_ccord(x,y)
                 return true
-        return false       
+        return false     
+          
 
 
 class GameObject(pygame.sprite.Sprite):
