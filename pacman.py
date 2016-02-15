@@ -24,7 +24,11 @@ class Map:
     def __init__(self, w, h):
         self.map = [ [list()]*x for i in range(y) ]
         map_input = open('./resources/map.txt', 'r')
-        #FIXME
+        tmp = map_input.readlines()
+        for i in range(16):
+			for j in range(16):
+				self.map[i][j] = tmp[i][j]
+				#FIXME:add drawing and colliding and stuff
 
     def get(self, x, y):
         return self.map[x][y]
