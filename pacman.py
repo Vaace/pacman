@@ -20,32 +20,31 @@ def draw_background(scr, img=None):
         scr.blit(bg, (0, 0))
         
 
-          
 
 
 class GameObject(pygame.sprite.Sprite):
-    def __init__(self, img, x, y, tile_size, map_size):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(img)
-        self.screen_rect = None
-        self.x = 0
-        self.y = 0
-        self.tick = 0
-        self.tile_size = tile_size
-        self.map_size = map_size
-        self.set_coord(x, y)
+	def __init__(self, img, x, y, tile_size, map_size):
+		pygame.sprite.Sprite.__init__(self)
+		self.image = pygame.image.load(img)
+		self.screen_rect = None
+		self.x = 0
+		self.y = 0
+		self.tick = 0
+		self.tile_size = tile_size
+		self.map_size = map_size
+		self.set_coord(x, y)
 
-    def set_coord(self, x, y):
-        self.x = x
-        self.y = y
-        self.screen_rect = Rect(floor(x) * self.tile_size, floor(y) * self.tile_size, self.tile_size, self.tile_size )
+	def set_coord(self, x, y):
+		self.x = x
+		self.y = y
+		self.screen_rect = Rect(floor(x) * self.tile_size, floor(y) * self.tile_size, self.tile_size, self.tile_size )
 
-    def game_tick(self):
-        self.tick += 1
+	def game_tick(self):
+		self.tick += 1
 
-    def draw(self, scr):
-        scr.blit(self.image, (self.screen_rect.x, self.screen_rect.y))
-        
+	def draw(self, scr):
+		scr.blit(self.image, (self.screen_rect.x, self.screen_rect.y))
+
 
 		
 class Unbreakable_wall(GameObject):
@@ -63,36 +62,34 @@ class Destructable(GameObject):
 	def destruct(self):
 		del self
 				
- 
- 
+
+
 class Map:
-    def __init__(self, w, h):
-        self.map = [ [list()]*w for i in range(h) ]
-        map_input = open('./resources/map.txt', 'r')
-        tmp = map_input.readlines()
-        for i in range(16):
+	def __init__(self, w, h):
+		self.map = [ [list()]*w for i in range(h) ]
+		map_input = open('./resources/map.txt', 'r')
+		tmp = map_input.readlines()
+		for i in range(16):
 			for j in range(16):
-				self.map[i][j] = tmp[i][j]
-	for x in range(w):
-		for y in range(h):
-			if self.map[x][y] == '1':
-				self.map[x][y] = Unbreakable_wall.__init__(x, y, tile_size, map_size)
-			elif self.map[x][y] == '7':
-				self.map[x][y] = Destructable.__init__(x, y, tile_size, map_size)		
-				
-				#FIXME:add drawing and colliding and stuff
+				self.map[i][j].append(tmp[i][j])
+		for x in range(h):
+			for y in range(w):
+				if self.map[x][y] == '1':
+					self.map[x][y] = Unbreakable_wall(x,y,tile_size, map_size)
+				elif self.map[x][y] == '7':
+					self.map[x][y] = Destructable(x,y,tile_size,map_size)
 
-    def get(self, x, y):
-        return self.map[x][y]
+	def get(self, x, y):
+		return self.map[x][y]
 
-    def moveTo(self, obj, new_x, new_y):
-        point = self.map[obj.x][obj.y]
-        if obj in point:
-                point.remove(obj)
-                self.map[new_x][new_y].add(obj)
-                obj.set_ccord(x,y)
-                return true
-        return false     
+	def moveTo(self, obj, new_x, new_y):
+		point = self.map[obj.x][obj.y]
+		if obj in point:
+				point.remove(obj)
+				self.map[new_x][new_y].add(obj)
+				obj.set_coord(x,y)
+				return true
+		return false     
 
 class Ghost(GameObject):
     def __init__(self, x, y, tile_size, map_size):
@@ -177,7 +174,7 @@ if __name__ == '__main__':
     init_window()
     tile_size = 32
     map_size = 16
-    game_map = Map(#dunno yet, 16)
+    game_map = Map(map_size, map_size)
     ghost = Ghost(0, 0, tile_size, map_size)
     pacman = Pacman(5, 5, tile_size, map_size)
     background = pygame.image.load("./resources/background.png")
@@ -191,4 +188,8 @@ if __name__ == '__main__':
         draw_background(screen, background)
         pacman.draw(screen)
         ghost.draw(screen)
+        for x in range(map_size):
+			for y in range(map_size):
+				for obj in game_map.map[x][y]:
+					obj.draw(screen)
         pygame.display.update()
