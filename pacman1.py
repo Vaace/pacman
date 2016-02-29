@@ -46,7 +46,7 @@ class GameObject(pygame.sprite.Sprite):
 
 class Ghost(GameObject):
     ghosts = []
-    num = 8
+    num = 4
     def __init__(self, x, y, tile_size, map_size):
         GameObject.__init__(self, './resources/ghost.png', x, y, tile_size, map_size)
         self.direction = 0
@@ -139,12 +139,13 @@ class Pacman(GameObject):
         self.set_coord(self.x, self.y)
         if isinstance(MAP.map[int(self.y)][int(self.x)], Dot):
             MAP.map[int(self.y)][int(self.x)] = None
+            print(MAP.dot_counter())
 
 class Wall(GameObject):
     def __init__(self, x, y, tile_size, map_size):
         GameObject.__init__(self, './resources/wall.png', x, y, tile_size, map_size)
-#    def game_tick(self):   FIXME DELETE
-#       super(Wall, self).game_tick()
+
+
 class Dot(GameObject):
     def __init__(self, x, y, tile_size, map_size):
         GameObject.__init__(self, './resources/dot.png', x, y, tile_size, map_size)
@@ -168,17 +169,27 @@ class Map:
                 elif txt[y][x] == ".":
                     self.map[-1].append(Dot(x, y, tile_size, map_size))
                 else:
-                    self.map[-1].append(None)
+                    self.map[-1].append(None)            
         self.tile_size = tile_size
         self.map_size = map_size
+        
     def draw(self,screen):
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
                 if self.map[y][x]:
-                    self.map[y][x].draw(screen)                   
+                    self.map[y][x].draw(screen) 
+                    
+    def dot_counter(self):
+		number = 0
+		for x in self.map:
+			for y in x:
+				if isinstance(y, Dot):
+					number += 1
+		return number			
+					                                  
         
 
-def process_events(events, packman):
+def process_events(events, packman, num):
     for event in events:
         if (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
             sys.exit(0)
@@ -193,6 +204,8 @@ def process_events(events, packman):
                 packman.direction = 2
             elif event.key == K_SPACE:
                 packman.direction = 0
+        elif num == 0:
+			sys.exit('You win!')        
     
 if __name__ == '__main__':
     init_window()
@@ -204,9 +217,10 @@ if __name__ == '__main__':
     MAP = Map('./resources/map.txt', tile_size, map_size)
     backgfloor = pygame.image.load("./resources/background.png")
     screen = pygame.display.get_surface()
+    
 
     while 1:
-        process_events(pygame.event.get(), pacman)
+        process_events(pygame.event.get(), pacman, MAP.dot_counter())
         pygame.time.delay(100)
         tick_ghosts()
         pacman.game_tick()
