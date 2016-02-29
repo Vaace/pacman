@@ -110,7 +110,6 @@ class Pacman(GameObject):
             self.image = pygame.image.load('./resources/pacman_left.png')
         elif d == 4:
             self.image = pygame.image.load('./resources/pacman_up.png')
-          
         elif d != 0:
             raise ValueError("invalid direction detected")           
     direction = property(__get_direction, __set_direction)
