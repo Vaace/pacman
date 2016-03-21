@@ -208,7 +208,7 @@ def process_events(events, packman, num):
         else:
             for g in Ghost.ghosts:
                 if (int(g.x) == int(pacman.x)) and (int(g.y) == int(pacman.y)):
-                    sys.exit('You lose!')  
+					sys.exit('You lose!')  
     
 if __name__ == '__main__':
     init_window()
